@@ -861,7 +861,6 @@ export default [{"word":"file ","desc":"n. 文件；v. 保存文件"},
  {"word":"increase ","desc":"v. 增加，增大"},
  {"word":"host ","desc":"n. 主机"},
  {"word":"sample ","desc":"n. & v. 样品，样本；抽样"},
-
  {"word":"pending ","desc":"a. 悬而未决的，未定的"},
  {"word":"divide ","desc":"v. 除"},
  {"word":"boot ","desc":"n. 引导，靴"},

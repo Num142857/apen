@@ -75,17 +75,20 @@ class Index extends Component {
 
   render() {
     const {
-      playerStore: { words }
+      playerStore: { words ,updateKey}
     } = this.props;
     return (
       <View className="index">
+      <Text className="updateKey">{updateKey}</Text>
         {words.map((item, index) => {
           return (
             <View key={item.word} className="item">
+            <View className="text">
               <Text className="word" onClick={this.redirectTo.bind(this, "/pages/detail/index")}>
-                {item.word}
+              {item.word}
               </Text>
               <Text className="desc">{item.desc}</Text>
+            </View>
               <View
                 onClick={this.player.bind(this, item, index)}
                 className="play-btn"
