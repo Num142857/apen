@@ -32,7 +32,8 @@ const config = {
   },
   alias: {
     '@components': "src/components",
-    '@utils': "src/utils"
+    '@utils': "src/utils",
+    '@data': "src/data"
   },
   weapp: {
     module: {

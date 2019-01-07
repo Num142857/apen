@@ -4,13 +4,19 @@ import { observer, inject } from "@tarojs/mobx";
 import { Ionicons } from "taro-icons";
 import "./index.less";
 import "taro-icons/scss/Ionicons.scss"; // 131KB
+type words = {
+  word: string;
+  desc:string;
+  playing: boolean;
+};
 
 type PageStateProps = {
   playerStore: {
-    playing: boolean,
-    setPlayState: Function
-  }
-}
+    words: [words];
+    updateKey:number;
+    setPlayState: Function;
+  };
+};
 
 interface Index {
   props: PageStateProps;
@@ -43,44 +49,56 @@ class Index extends Component {
 
   componentDidHide() {}
 
-  getTTS(word:string):string{
-    return `https://fanyi.baidu.com/gettts?lan=en&text=${word}`
+  getTTS(word: string): string {
+    return `https://fanyi.baidu.com/gettts?lan=en&text=${word}`;
   }
 
-  redirectTo(path: string){
+  redirectTo(path: string) {
     Taro.redirectTo({
       url: path
-    })
+    });
   }
-  player() {
-    const { playerStore } = this.props
+  player(item: words, index: number) {
+    console.log(item);
+    const { playerStore } = this.props;
     const innerAudioContext = Taro.createInnerAudioContext();
     innerAudioContext.autoplay = true;
-    innerAudioContext.src = this.getTTS('word')
+    innerAudioContext.src = this.getTTS(item.word);
 
-    innerAudioContext.onPlay(()=>{
-      playerStore.setPlayState(true)
-    })
-    innerAudioContext.onEnded(()=>{
-      playerStore.setPlayState(false)
-    })
+    innerAudioContext.onPlay(() => {
+      playerStore.setPlayState(index, true);
+    });
+    innerAudioContext.onEnded(() => {
+      playerStore.setPlayState(index, false);
+    });
   }
 
   render() {
-    const { playerStore: { playing } } = this.props
-    console.log(playing)
+    const {
+      playerStore: { words }
+    } = this.props;
     return (
       <View className="index">
-        <View className="item" >
-          <Text onClick={this.redirectTo.bind(this,'/pages/detail/index')}>Feel</Text>
-          <View onClick={this.player} className="play-btn">
-          {
-            playing?
-            <Ionicons name="ios-volume-high" size={62} color="#fff" />:
-            <Ionicons name="ios-volume-low" size={62} color="#fff" />
-          }
-          </View>
-        </View>
+        {words.map((item, index) => {
+          return (
+            <View key={item.word} className="item">
+              <Text className="word" onClick={this.redirectTo.bind(this, "/pages/detail/index")}>
+                {item.word}
+              </Text>
+              <Text className="desc">{item.desc}</Text>
+              <View
+                onClick={this.player.bind(this, item, index)}
+                className="play-btn"
+              >
+                {item.playing ? (
+                  <Ionicons name="ios-volume-high" size={62} color="#fff" />
+                ) : (
+                  <Ionicons name="ios-volume-low" size={62} color="#fff" />
+                )}
+              </View>
+            </View>
+          );
+        })}
       </View>
     );
   }
