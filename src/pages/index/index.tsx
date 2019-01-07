@@ -1,26 +1,23 @@
-import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
-import { observer, inject } from '@tarojs/mobx'
-
-import './index.less'
+import Taro, { Component, Config } from "@tarojs/taro";
+import { View, Text } from "@tarojs/components";
+import { observer, inject } from "@tarojs/mobx";
+import { Ionicons } from "taro-icons";
+import "./index.less";
+import "taro-icons/scss/Ionicons.scss"; // 131KB
 
 type PageStateProps = {
-  counterStore: {
-    counter: number,
-    increment: Function,
-    decrement: Function,
-    incrementAsync: Function
+  playerStore: {
+    playing: boolean,
+    setPlayState: Function
   }
 }
 
 interface Index {
   props: PageStateProps;
 }
-
-@inject('counterStore')
+@inject("playerStore")
 @observer
 class Index extends Component {
-
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -29,50 +26,59 @@ class Index extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
   config: Config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: "首页"
+  };
+
+  componentWillMount() {}
+
+  componentWillReact() {
+    console.log("componentWillRect");
   }
 
-  componentWillMount () { }
+  componentDidMount() {}
 
-  componentWillReact () {
-    console.log('componentWillRect')
+  componentWillUnmount() {}
+
+  componentDidShow() {}
+
+  componentDidHide() {}
+
+  getTTS(word:string):string{
+    return `https://fanyi.baidu.com/gettts?lan=en&text=${word}`
   }
 
-  componentDidMount () { }
+  player() {
+    const { playerStore } = this.props
+    const innerAudioContext = Taro.createInnerAudioContext();
+    innerAudioContext.autoplay = true;
+    innerAudioContext.src = this.getTTS('word')
 
-  componentWillUnmount () { }
-
-  componentDidShow () { }
-
-  componentDidHide () { }
-
-  increment = () => {
-    const { counterStore } = this.props
-    counterStore.increment()
+    innerAudioContext.onPlay(()=>{
+      playerStore.setPlayState(true)
+    })
+    innerAudioContext.onEnded(()=>{
+      playerStore.setPlayState(false)
+    })
   }
 
-  decrement = () => {
-    const { counterStore } = this.props
-    counterStore.decrement()
-  }
-
-  incrementAsync = () => {
-    const { counterStore } = this.props
-    counterStore.incrementAsync()
-  }
-
-  render () {
-    const { counterStore: { counter } } = this.props
+  render() {
+    const { playerStore: { playing } } = this.props
+    console.log(playing)
     return (
-      <View className='index'>
-      <View className='item'>
-        <Text>
-          Feel
-        </Text>
+      <View className="index">
+        <View className="item">
+          <Text>Feel</Text>
+          <View onClick={this.player} className="play-btn">
+          {
+            playing?
+            <Ionicons name="ios-volume-high" size={62} color="#fff" />:
+            <Ionicons name="ios-volume-low" size={62} color="#fff" />
+          }
+          </View>
+        </View>
       </View>
-      </View>
-    )
+    );
   }
 }
 
-export default Index
+export default Index;
