@@ -30,6 +30,10 @@ const config = {
     options: {
     }
   },
+  alias: {
+    '@components': "src/components",
+    '@utils': "src/utils"
+  },
   weapp: {
     module: {
       postcss: {

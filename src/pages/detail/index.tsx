@@ -18,15 +18,8 @@ interface Index {
 @inject("playerStore")
 @observer
 class Index extends Component {
-  /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
   config: Config = {
-    navigationBarTitleText: "首页"
+    navigationBarTitleText: "详情"
   };
 
   componentWillMount() {}
@@ -47,11 +40,6 @@ class Index extends Component {
     return `https://fanyi.baidu.com/gettts?lan=en&text=${word}`
   }
 
-  redirectTo(path: string){
-    Taro.redirectTo({
-      url: path
-    })
-  }
   player() {
     const { playerStore } = this.props
     const innerAudioContext = Taro.createInnerAudioContext();
@@ -71,16 +59,7 @@ class Index extends Component {
     console.log(playing)
     return (
       <View className="index">
-        <View className="item" >
-          <Text onClick={this.redirectTo.bind(this,'/pages/detail/index')}>Feel</Text>
-          <View onClick={this.player} className="play-btn">
-          {
-            playing?
-            <Ionicons name="ios-volume-high" size={62} color="#fff" />:
-            <Ionicons name="ios-volume-low" size={62} color="#fff" />
-          }
-          </View>
-        </View>
+
       </View>
     );
   }
